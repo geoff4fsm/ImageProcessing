@@ -27,6 +27,19 @@ public class ImageProcessing {
 
         int[][] filtered = colorFilter(imageData, 25, 25, -50);
         twoDToImage(filtered, "./filtered_apple.jpg");
+
+        int[][] blankImg = new int[300][300];
+        int[][] randImg = paintRandomImage(blankImg);
+        twoDToImage(randImg, "./randon_img.jpg");
+
+        int[] rgba = { 200, 100, 20, 255};
+        int color = getColorIntValFromRGBA(rgba);
+        int[][] rectangleImg = paintRectangle( randImg, 100, 200, 40, 40, color);
+        twoDToImage( rectangleImg, "./rectangle_img.jpg");
+
+        int [][] generateRectanglesImg = generateRectangles( randImg, 200);
+        twoDToImage(generateRectanglesImg, "./random_rectangles.jpg");
+
         // int[][] allFilters = stretchHorizontally(shrinkVertically(colorFilter(
         // negativeColor(trimBorder(invertImage(imageData), 50)), 200, 20, 40)));
     }
@@ -134,17 +147,50 @@ public class ImageProcessing {
     }
     // Painting Methods
     public static int[][] paintRandomImage(int[][] canvas) {
-        // TODO: Fill in the code for this method
-        return null;
+
+        Random rand = new Random();
+
+        for ( int i = 0 ; i < canvas.length ; i++ ) {
+            for ( int j = 0 ; j < canvas[0].length ; j++ ) {
+
+                int[] rgba = { rand.nextInt(256), rand.nextInt(256), rand.nextInt(256), 255};
+                canvas[i][j] = getColorIntValFromRGBA(rgba);
+            }
+        }
+        return canvas;
     }
     public static int[][] paintRectangle(int[][] canvas, int width, int height,
                                          int rowPosition, int colPosition, int color) {
-        // TODO: Fill in the code for this method
-        return null;
+        for ( int i = 0 ; i < canvas.length ; i++ ) {
+            for ( int j = 0 ; j < canvas[0].length ; j++ ) {
+                if ( i >= rowPosition && i <= rowPosition + width ) {
+                    if ( j >= colPosition && j <= colPosition + height ) {
+                        canvas[i][j] = color;
+                    }
+                }
+            }
+        }
+        return canvas;
     }
     public static int[][] generateRectangles( int[][] canvas, int numRectangles) {
-        // TODO: Fill in the code for this method
-        return null;
+
+        Random rand = new Random();
+
+        for ( int i = 0 ; i < numRectangles ; i++ ) {
+
+            int width = rand.nextInt(canvas[0].length);
+            int height = rand.nextInt(canvas.length);
+
+            int row = rand.nextInt(canvas.length - height);
+            int col = rand.nextInt(canvas[0].length - width);
+
+            int[] rgba = { rand.nextInt(256), rand.nextInt(256), rand.nextInt(256), 255};
+            int color = getColorIntValFromRGBA(rgba);
+
+            canvas = paintRectangle( canvas, width, height, row, col, color);
+        }
+
+        return canvas;
     }
     // Utility Methods
     public static int[][] imgToTwoD(String inputFileOrLink) {
