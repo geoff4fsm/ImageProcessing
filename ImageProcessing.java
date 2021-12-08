@@ -12,8 +12,21 @@ public class ImageProcessing {
         // viewImageData(imageData);
         int[][] trimmed = trimBorders(imageData, 60);
         twoDToImage(trimmed, "./trimmed_apple.jpg");
+
         int[][] negatived = negativeColor(imageData);
         twoDToImage(negatived, "./negatived_apple.jpg");
+
+        int[][] stretched = stretchHorizontally(imageData);
+        twoDToImage(stretched, "./stretched_apple.jpg");
+
+        int[][] shrunk = shrinkVertically(imageData);
+        twoDToImage(shrunk, "./shrunk_apple.jpg");
+
+        int[][] inverted = invertImage(imageData);
+        twoDToImage(inverted, "./inverted_apple.jpg");
+
+        int[][] filtered = colorFilter(imageData, 25, 25, -50);
+        twoDToImage(filtered, "./filtered_apple.jpg");
         // int[][] allFilters = stretchHorizontally(shrinkVertically(colorFilter(
         // negativeColor(trimBorder(invertImage(imageData), 50)), 200, 20, 40)));
     }
@@ -51,18 +64,73 @@ public class ImageProcessing {
         }
         return negativeImg;
     }
+    public static int[][] stretchHorizontally( int[][] imageTwoD ) {
+        int[][] stretchedImg = new int[imageTwoD.length][imageTwoD[0].length * 2];
+
+        for ( int i = 0; i < imageTwoD.length; i++ ) {
+            for ( int j = 0; j < imageTwoD[i].length; j++) {
+              int it = j * 2;
+              stretchedImg[i][it] = imageTwoD[i][j];
+                stretchedImg[i][it + 1] = imageTwoD[i][j];
+            }
+        }
+        return stretchedImg;
+    }
     public static int[][] shrinkVertically(int[][] imageTwoD) {
-        // TODO: Fill in the code for this method
-        return null;
+        int[][] shrunkImg = new int[imageTwoD.length / 2][imageTwoD[0].length];
+
+        for ( int i = 0; i < imageTwoD[0].length; i++ ) {
+            for ( int j = 0; j < imageTwoD.length - 1; j+=2) {
+
+                shrunkImg[j/2][i] = imageTwoD[j][i];
+            }
+        }
+        return shrunkImg;
     }
     public static int[][] invertImage(int[][] imageTwoD) {
-        // TODO: Fill in the code for this method
-        return null;
+        int[][] invertedImg = new int[imageTwoD.length][imageTwoD[0].length];
+
+        for ( int i = 0; i < imageTwoD.length; i++ ) {
+            for ( int j = 0; j < imageTwoD[i].length; j++) {
+                invertedImg[i][j] = imageTwoD[(imageTwoD.length - 1) - i]
+                        [(imageTwoD[i].length - 1) - j];
+            }
+        }
+        return invertedImg;
     }
     public static int[][] colorFilter(int[][] imageTwoD, int redChangeValue,
                                       int greenChangeValue, int blueChangeValue) {
-        // TODO: Fill in the code for this method
-        return null;
+        int[][] filteredImg = new int[imageTwoD.length][imageTwoD[0].length];
+        for ( int i = 0; i < imageTwoD.length; i++ ) {
+            for ( int j = 0; j < imageTwoD[i].length; j++) {
+
+                int rgba[] = getRGBAFromPixel(imageTwoD[i][j]);
+
+                int newRed = rgba[0] + redChangeValue;
+                int newGreen = rgba[1] + greenChangeValue;
+                int newBlue = rgba[2] + blueChangeValue;
+
+                if ( newRed < 0 ) {
+                    newRed = 0;
+                } else if ( newRed > 255 ) {
+                    newRed = 255;
+                }
+                if ( newGreen < 0 ) {
+                    newGreen = 0;
+                } else if ( newGreen > 255 ) {
+                    newGreen = 255;
+                }
+                if ( newBlue < 0 ) {
+                    newBlue = 0;
+                } else if ( newBlue > 255 ) {
+                    newBlue = 255;
+                }
+                rgba[0] = newRed;
+                rgba[1] = newGreen;
+                rgba[2] = newBlue;
+            }
+        }
+        return filteredImg;
     }
     // Painting Methods
     public static int[][] paintRandomImage(int[][] canvas) {
